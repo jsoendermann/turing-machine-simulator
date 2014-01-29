@@ -68,18 +68,18 @@ int getint() {
 void make_states() {
     do {
         bool is_accept = false, is_reject = false;
-        printf("State q%d has been added to the set of states. Is this an accepting state? [y|n]\n", num_states);
+        printf("State q%d has been added to the set of states. Is this an accepting state? [y|n] ", num_states);
         if (get_non_whitespace_char() == 'y') 
             is_accept = true;
         else {
-            printf("Is state q%d a rejecting state? [y|n]\n", num_states);
+            printf("Is state q%d a rejecting state? [y|n] ", num_states);
             if (get_non_whitespace_char() == 'y')
                 is_reject = true;
         }
         states[num_states] = make_state(num_states, is_accept, is_reject);
         num_states++;
 
-        printf("Would you like to create another state? [y|n]\n");
+        printf("Would you like to create another state? [y|n] ");
     } while (get_non_whitespace_char() == 'y');
 }
 
@@ -94,10 +94,10 @@ void make_transitions() {
         int to = getint();
         printf("Which character does the transition write?\n");
         char write = get_non_whitespace_char();
-        printf("Does the head move to the left or to the right? [l|r]\n");
+        printf("Does the head move to the left or to the right? [l|r] ");
         char d = get_non_whitespace_char();
         transitions[num_transitions++] = make_transition(from, read, to, write, (d=='l'?-1:1));
-        printf("Done! Do you want to create another transition? [y|n]\n");
+        printf("Done! Do you want to create another transition? [y|n] ");
     } while (get_non_whitespace_char() == 'y');
 }
 
@@ -212,14 +212,14 @@ int main(int argc, char **argv) {
 
     printf("Welcome to Jan Soendermann's Turing Machine simulator!\n\n");
 
-    printf("Would you like to try the 1^2^n example from the book?\n");
+    printf("Would you like to try the 1^2^n example from the book? [y|n] ");
     if (get_non_whitespace_char() == 'y')
         make_example_states_and_transitions();
     else {
         states[0] = make_state(num_states++, false, false);
         printf("A starting state q0 has been created for you\n");
 
-        printf("Would you like to create additional states? [y|n]\n");
+        printf("Would you like to create additional states? [y|n] ");
         if (get_non_whitespace_char() == 'y')
             make_states();
 

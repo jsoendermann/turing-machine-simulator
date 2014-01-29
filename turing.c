@@ -153,6 +153,7 @@ void simulate_machine(char *input) {
     state *current_state = states[0];
 
     while (!(current_state->is_accept || current_state->is_reject)) {
+        sleep(1);
         char c = tape[head];
 
         transition *matching_transition = NULL;

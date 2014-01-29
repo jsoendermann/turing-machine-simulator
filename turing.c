@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <unistd.h>
 
 #define TAPE_LENGTH 40
 
@@ -180,27 +181,57 @@ void simulate_machine(char *input) {
         printf("Failure, q%d is a rejecting state!\n", current_state->id);
 }
 
+void make_example_states_and_transitions() {
+    states[num_states++] = make_state(0, false, false);
+    states[num_states++] = make_state(1, false, false);
+    states[num_states++] = make_state(2, false, false);
+    states[num_states++] = make_state(3, false, false);
+    states[num_states++] = make_state(4, false, false);
+    states[num_states++] = make_state(5, false, true);
+    states[num_states++] = make_state(6, true, false);
+
+    transitions[num_transitions++] = make_transition(0, '1', 1, '-', 1);
+    transitions[num_transitions++] = make_transition(0, '-', 5, '-', 1);
+    transitions[num_transitions++] = make_transition(0, '.', 5, '.', 1);
+    transitions[num_transitions++] = make_transition(1, '.', 1, '.', 1);
+    transitions[num_transitions++] = make_transition(1, '-', 6, '-', 1);
+    transitions[num_transitions++] = make_transition(1, '1', 2, '.', 1);
+    transitions[num_transitions++] = make_transition(2, '.', 2, '.', 1);
+    transitions[num_transitions++] = make_transition(2, '1', 3, '1', 1);
+    transitions[num_transitions++] = make_transition(2, '-', 4, '-', -1);
+    transitions[num_transitions++] = make_transition(4, '1', 4, '1', -1);
+    transitions[num_transitions++] = make_transition(4, '.', 4, '.', -1);
+    transitions[num_transitions++] = make_transition(4, '-', 1, '-', 1);
+    transitions[num_transitions++] = make_transition(3, '1', 2, '.', 1);
+    transitions[num_transitions++] = make_transition(3, '.', 3, '.', 1);
+    transitions[num_transitions++] = make_transition(3, '-', 5, '-', 1);
+}
 
 int main(int argc, char **argv) {
     char *input = (char*)malloc(sizeof(char)*50);
 
     printf("Welcome to Jan Soendermann's Turing Machine simulator!\n\n");
 
-    states[0] = make_state(num_states++, false, false);
-    printf("A starting state q0 has been created for you\n");
-
-    printf("Would you like to create additional states? [y|n]\n");
+    printf("Would you like to try the 1^2^n example from the book?\n");
     if (get_non_whitespace_char() == 'y')
-        make_states();
+        make_example_states_and_transitions();
+    else {
+        states[0] = make_state(num_states++, false, false);
+        printf("A starting state q0 has been created for you\n");
 
-    printf("The following states have been created:\n");
-    for (int i = 0; i < num_states; i++)
-        printf("q%d ", i);
-    printf("\n\n");
+        printf("Would you like to create additional states? [y|n]\n");
+        if (get_non_whitespace_char() == 'y')
+            make_states();
 
-    printf("Next, let's create some transitions between your states.\n");
-    make_transitions();
-    printf("\n");
+        printf("The following states have been created:\n");
+        for (int i = 0; i < num_states; i++)
+            printf("q%d ", i);
+        printf("\n\n");
+
+        printf("Next, let's create some transitions between your states.\n");
+        make_transitions();
+        printf("\n");
+    }
 
     printf("The following states and transitions have been created:\n");
     print_states_and_transitions();

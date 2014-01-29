@@ -5,13 +5,7 @@
 #include <ctype.h>
 #include <unistd.h>
 
-#define TAPE_LENGTH 40
-
-typedef struct state {
-    int id;
-    bool is_accept;
-    bool is_reject;
-} state;
+#include "turing.h"
 
 state *make_state(int id, bool is_accept, bool is_reject) {
     state *s = (state*)malloc(sizeof(state));
@@ -21,13 +15,6 @@ state *make_state(int id, bool is_accept, bool is_reject) {
     return s;
 }
 
-typedef struct transition {
-    int from;
-    char read;
-    int to;
-    char write;
-    int direction; // -1: Left, 1: Right
-} transition;
 
 transition *make_transition(int from, char read, int to, char write, int direction) {
     transition *t = (transition*)malloc(sizeof(transition));

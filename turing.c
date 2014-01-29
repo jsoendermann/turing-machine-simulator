@@ -33,7 +33,7 @@ int num_states = 0;
 transition *transitions[50];
 int num_transitions = 0;
 
-// FIXME this function skips newlines. maybe there's a better way to do this
+// TODO this function skips newlines. maybe there's a better way to do this
 char get_non_whitespace_char() {
     char c;
     do {
@@ -42,6 +42,7 @@ char get_non_whitespace_char() {
     return c;
 }
 
+// TODO this can only read ints with one digit. use scanf for this
 int getint() {
     char s[2];
     do {

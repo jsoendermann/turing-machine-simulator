@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <ctype.h>
 
+#define TAPE_LENGTH 4096
+
 typedef struct state {
     int id;
     bool is_accept;
@@ -119,9 +121,66 @@ void print_states_and_transitions() {
     }
 }
 
+void print_machine_configuration(char *tape, int head) {
+    for (int i = -15; i < 30; i++) {
+        printf("%c ", tape[head+i]);
+    }
+    printf("\n");
+    for (int i = 0; i < 15; i++)
+        printf("  ");
+    printf("^\n");
+
+}
+
+state *get_state_from_id(int id) {
+    for (int i = 0; i < num_states; i++)
+        if (states[i]->id == id)
+            return states[i];
+    return NULL;
+}
+
+void simulate_machine(char *input) {
+    char tape[TAPE_LENGTH];
+    for (int i = 0; i < TAPE_LENGTH; i++)
+        tape[i] = '-';
+    int head = TAPE_LENGTH/2;
+    for (int i = 0; input[i] != '\0'; i++)
+        tape[head+i] = input[i];
+
+    print_machine_configuration(tape, head);
+
+    state *current_state = states[0];
+
+    while (!(current_state->is_accept || current_state->is_reject)) {
+        char c = tape[head];
+
+        transition *matching_transition = NULL;
+        for (int i = 0; i < num_transitions; i++) {
+            if (transitions[i]->from == current_state->id && transitions[i]->read == c) {
+                matching_transition = transitions[i];
+                break;
+            }
+        }
+        if (matching_transition == NULL) {
+            printf("Failure, no matching transition found\n");
+            exit(-1);
+        }
+
+        current_state = get_state_from_id(matching_transition->to);
+        tape[head] = matching_transition->write;
+        head += matching_transition->direction;
+
+        print_machine_configuration(tape, head);
+    }
+    if (current_state->is_accept)
+        printf("Success, q%d is an accepting state!\n", current_state->id);
+    if (current_state->is_reject)
+        printf("Failure, q%d is a rejecting state!\n", current_state->id);
+}
+
 
 int main(int argc, char **argv) {
-    char s[20];
+    char *input = (char*)malloc(sizeof(char)*50);
 
     printf("Welcome to Jan Soendermann's Turing Machine simulator!\n\n");
 
@@ -143,4 +202,10 @@ int main(int argc, char **argv) {
 
     printf("The following states and transitions have been created:\n");
     print_states_and_transitions();
+    printf("\n");
+
+    printf("Please enter the input string\n");
+    scanf("%s", input);
+
+    simulate_machine(input);
 }

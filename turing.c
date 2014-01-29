@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-#define TAPE_LENGTH 4096
+#define TAPE_LENGTH 40
 
 typedef struct state {
     int id;
@@ -122,11 +122,11 @@ void print_states_and_transitions() {
 }
 
 void print_machine_configuration(char *tape, int head) {
-    for (int i = -15; i < 30; i++) {
-        printf("%c ", tape[head+i]);
+    for (int i = 0; i < TAPE_LENGTH; i++) {
+        printf("%c ", tape[i]);
     }
     printf("\n");
-    for (int i = 0; i < 15; i++)
+    for (int i = 0; i < head; i++)
         printf("  ");
     printf("^\n");
 
@@ -143,7 +143,7 @@ void simulate_machine(char *input) {
     char tape[TAPE_LENGTH];
     for (int i = 0; i < TAPE_LENGTH; i++)
         tape[i] = '-';
-    int head = TAPE_LENGTH/2;
+    int head = TAPE_LENGTH/3;
     for (int i = 0; input[i] != '\0'; i++)
         tape[head+i] = input[i];
 
@@ -165,6 +165,8 @@ void simulate_machine(char *input) {
             printf("Failure, no matching transition found\n");
             exit(-1);
         }
+
+        printf("State change: q%d -> q%d\n", current_state->id, matching_transition->to);
 
         current_state = get_state_from_id(matching_transition->to);
         tape[head] = matching_transition->write;
